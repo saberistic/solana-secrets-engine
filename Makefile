@@ -15,7 +15,7 @@ endif
 all: fmt build start
 
 build:
-	GOOS=$(OS) GOARCH="$(GOARCH)" go build -o vault/plugins/solana-secrets-engine cmd/solana-secrets-engine/main.go
+	CGO_ENABLED=0 GOOS=$(OS) GOARCH="$(GOARCH)" go build -o vault/plugins/solana-secrets-engine cmd/solana-secrets-engine/main.go
 
 start:
 	vault server -dev -dev-root-token-id=root -dev-plugin-dir=./vault/plugins
