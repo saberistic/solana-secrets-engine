@@ -3,10 +3,10 @@ package main
 import (
 	"os"
 
-	solana_se "github.com/amirsaber/solana-secrets-engine"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/vault/api"
 	"github.com/hashicorp/vault/sdk/plugin"
+	solana_se "github.com/saberistic/solana-secrets-engine"
 )
 
 func main() {
