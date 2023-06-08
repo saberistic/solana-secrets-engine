@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebAuthn Example</title>
+</head>
+<body>
+  <h1>WebAuthn Example</h1>
+
+  <button id="webauthnButton">Authenticate with WebAuthn</button>
+
+  <script>
+    // Check if the browser supports WebAuthn
+    if (!window.PublicKeyCredential) {
+      alert('WebAuthn is not supported in this browser.');
+    }
+
+    // Add click event listener to the WebAuthn button
+    document.getElementById('webauthnButton').addEventListener('click', async () => {
+      try {
+        // Request WebAuthn credentials
+        const credential = await navigator.credentials.create({
+          publicKey: {
+            challenge: new Uint8Array(['random_challenge']),
+            rp: { name: 'Example WebAuthn Service' },
+            user: {
+              id: new Uint8Array(['user_id']),
+              name: 'User',
+              displayName: 'John Doe'
+            },
+            pubKeyCredParams: [
+              { type: 'public-key', alg: -7 },
+              { type: 'public-key', alg: -257 }
+            ],
+            timeout: 60000,
+            attestation: 'direct',
+            authenticatorSelection: {
+              userVerification: 'preferred',
+              authenticatorAttachment: 'platform'
+            }
+          }
+        });
+
+        console.log(credential);
+        // Send the credential data to the server
+        const response = await fetch('/store-credential', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(credential)
+        });
+
+        // Handle the server response
+        if (response.ok) {
+          alert('WebAuthn credential stored successfully.');
+        } else {
+          alert('Failed to store WebAuthn credential.');
+        }
+      } catch (error) {
+        console.error('WebAuthn error:', error);
+      }
+    });
+  </script>
+</body>
+</html>
