@@ -26,7 +26,7 @@ describe("make a transaction", () => {
     new Uint8Array(JSON.parse(readFileSync(file).toString()))
   );
   //   let authority = Keypair.generate();
-  let fooPubKey = new PublicKey("9vn6htay59K9MRxJfysUG5jsPV73x46H4xC6MpU33GeF");
+  let fooPubKey = new PublicKey("DMwkaqFxdcgytj7i8fshcGYXTHLUMDQezwkeeg6ebxpf");
   let recipientPubKey = new PublicKey(
     "2ocFY4FUppAFoVnApmyxk8nh7Ft1dMuVwrJx5bqKKdEU"
   );

@@ -25,13 +25,13 @@ $ export VAULT_ADDR='http://127.0.0.1:8200'
 $ make enable
 
 # Write an account to the Solana secrets engine
-$ vault write -f solana-secrets/test
+$ vault write -f solana-secrets-engine/test
 Key       Value
 ---       -----
 pubKey    XXXXXX
 
 # Retrieve a signed transaction from Solana secrets engine
-$ vault read solana-secrets/test tx=ZZZZZZ // base64 encoded transaction
+$ vault read solana-secrets-engine/test tx=ZZZZZZ // base64 encoded transaction
 Key          Value
 ---          -----
 encodedTX    YYYYYY // base64 encoded signed transaction
