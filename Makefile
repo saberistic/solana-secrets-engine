@@ -29,4 +29,7 @@ clean:
 fmt:
 	go fmt $$(go list ./...)
 
+tests:
+	yarn run ts-mocha -p ./tsconfig.json -t 1000000 scripts/create-transaction.ts
+
 .PHONY: build clean fmt start enable

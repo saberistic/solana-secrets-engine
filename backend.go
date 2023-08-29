@@ -52,12 +52,16 @@ func newBackend() (*backend, error) {
 func (b *backend) paths() []*framework.Path {
 	return []*framework.Path{
 		{
-			Pattern: framework.MatchAllRegex("path"),
+			Pattern: framework.MatchAllRegex("email/action"),
 
 			Fields: map[string]*framework.FieldSchema{
-				"path": {
+				"email": {
 					Type:        framework.TypeString,
-					Description: "Specifies the path of the secret.",
+					Description: "Specifies the email of the secret.",
+				},
+				"action": {
+					Type:        framework.TypeString,
+					Description: "Specifies the action to take on email",
 				},
 			},
 
@@ -118,9 +122,9 @@ func (b *backend) handleRead(ctx context.Context, req *logical.Request, data *fr
 		return nil, fmt.Errorf("tx is not base64 encoded")
 	}
 
-	path := data.Get("path").(string)
+	email := data.Get("email").(string)
 
-	entry, err := req.Storage.Get(ctx, req.ClientToken+"/"+path)
+	entry, err := req.Storage.Get(ctx, req.ClientToken+"/"+email)
 	if err != nil {
 		return nil, err
 	}
@@ -173,13 +177,24 @@ func (b *backend) handleWrite(ctx context.Context, req *logical.Request, data *f
 		return nil, fmt.Errorf("client token empty")
 	}
 
-	path := data.Get("path").(string)
+	email := data.Get("email").(string)
+
+	var action string
+	for k, v := range req.Data {
+		if k == "action" {
+			action = v.(string)
+		}
+	}
+
+	if action != "init" {
+		return nil, fmt.Errorf("missing or bad action: %s", action)
+	}
 
 	acct := types.NewAccount()
 	pubKey := acct.PublicKey.ToBase58()
 
 	entry := &logical.StorageEntry{
-		Key:      req.ClientToken + "/" + path,
+		Key:      req.ClientToken + "/" + email,
 		Value:    acct.PrivateKey,
 		SealWrap: false,
 	}
@@ -204,9 +219,9 @@ func (b *backend) handleDelete(ctx context.Context, req *logical.Request, data *
 		return nil, fmt.Errorf("client token empty")
 	}
 
-	path := data.Get("path").(string)
+	email := data.Get("email").(string)
 
-	if err := req.Storage.Delete(ctx, req.ClientToken+"/"+path); err != nil {
+	if err := req.Storage.Delete(ctx, req.ClientToken+"/"+email); err != nil {
 		return nil, err
 	}
 
