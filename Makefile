@@ -12,7 +12,7 @@ endif
 
 .DEFAULT_GOAL := all
 
-all: fmt build start
+all: clean fmt build start
 
 build:
 	CGO_ENABLED=0 GOOS=$(OS) GOARCH="$(GOARCH)" go build -o vault/plugins/solana-secrets-engine cmd/solana-secrets-engine/main.go
@@ -24,7 +24,7 @@ enable:
 	vault secrets enable -path=solana-secrets-engine solana-secrets-engine
 
 clean:
-	rm -f ./vault/plugins/solana-secret-engine
+	rm -rf ./vault
 
 fmt:
 	go fmt $$(go list ./...)

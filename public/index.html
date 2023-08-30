@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebAuthn Example</title>
+    <script src="https://cdn.jsdelivr.net/gh/ethereumjs/browser-builds/dist/ethereumjs-tx/ethereumjs-tx-1.3.3.min.js"></script>
+  </head>
+  <body>
+    <h1>Login Example</h1>
+
+    <input id="email" type="text" name="email" value="inbox@saberistic.com" />
+    <button id="sendemail">Send email</button>
+    <button id="webauthnButton">Authenticate with WebAuthn</button>
+
+    <script>
+      const bf = ethereumjs.Buffer.Buffer;
+      function padString(input) {
+        // const b = ethereumjs.Buffer.Buffer;
+        let segmentLength = 4;
+        let stringLength = input.length;
+        let diff = stringLength % segmentLength;
+
+        if (!diff) {
+          return input;
+        }
+
+        let position = stringLength;
+        let padLength = segmentLength - diff;
+        let paddedStringLength = stringLength + padLength;
+        let buffer = bf.alloc(paddedStringLength);
+
+        buffer.write(input);
+
+        while (padLength--) {
+          buffer.write("=", position++);
+        }
+
+        return buffer.toString();
+      }
+      function base64url_encode(input, encoding = "utf8") {
+        if (bf.isBuffer(input)) {
+          return fromBase64(input.toString("base64"));
+        }
+        return fromBase64(bf.from(input, encoding).toString("base64"));
+      }
+      function base64url_decode(base64url) {
+        return bf.from(toBase64(base64url), "base64");
+      }
+      function toBase64(base64url) {
+        base64url = base64url.toString();
+        return padString(base64url).replace(/\-/g, "+").replace(/_/g, "/");
+      }
+      function fromBase64(base64) {
+        return base64.replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+      }
+      const host = "http://localhost:3000";
+      // Check if the browser supports WebAuthn
+      if (!window.PublicKeyCredential) {
+        alert("WebAuthn is not supported in this browser.");
+      }
+
+      document
+        .getElementById("sendemail")
+        .addEventListener("click", async () => {
+          const emailInput = document.getElementById("email");
+          // try {
+          let response = await fetch(`${host}/init`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: email.value,
+            }),
+          });
+          const json = await response.json();
+          var enc = new TextEncoder();
+          console.log(json.options.publicKey.challenge.toString());
+          json.options.publicKey.user.id = base64url_decode(
+            json.options.publicKey.user.id
+          );
+          json.options.publicKey.challenge = base64url_decode(
+            json.options.publicKey.challenge.toString()
+          );
+
+          if (json.options.publicKey.excludeCredentials) {
+            for (let cred of json.options.publicKey.excludeCredentials) {
+              cred.id = base64url_decode(cred.id);
+            }
+          }
+          console.log(json);
+          const cred = await navigator.credentials.create(json.options);
+          console.log(cred);
+
+          const credential = {};
+          credential.id = cred.id;
+          credential.rawId = base64url_encode(cred.rawId);
+          credential.type = cred.type;
+
+          if (cred.response) {
+            const clientDataJSON = base64url_encode(
+              cred.response.clientDataJSON
+            );
+            const attestationObject = base64url_encode(
+              cred.response.attestationObject
+            );
+            credential.response = {
+              clientDataJSON,
+              attestationObject,
+            };
+          }
+          console.log(credential);
+
+          response = await fetch(`${host}/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: email.value,
+              credential,
+            }),
+          });
+          // } catch (err) {
+          //   console.error(err);
+          // }
+        });
+    </script>
+  </body>
+</html>

@@ -5,14 +5,18 @@
         "script:create": "ts-mocha scripts/create-transaction.ts --timeout 0",
         "script:submit": "ts-mocha scripts/submit-transaction.ts --timeout 0",
         "serve": "static-server ./public",
+        "dev": "nodemon src/index.ts"
     },
     "dependencies": {
         "@solana/web3.js": "^1.77.3",
+        "cors": "^2.8.5",
         "express": "^4.18.2",
         "node-fetch": "^3.3.1",
+        "nodemon": "^3.0.1",
         "static-server": "^2.2.1"
     },
     "devDependencies": {
+        "@types/cors": "^2.8.13",
         "@types/express": "^4.17.17",
         "@types/mocha": "^10.0.1",
         "mocha": "^10.2.0",
