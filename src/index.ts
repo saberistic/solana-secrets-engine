@@ -82,8 +82,7 @@ app.post('/create', async (req: Request, res: Response) => {
   }
 });
 
-app.post('/signin', async (req: Request, res: Response) => {
-  console.log("signin");
+app.post('/transaction', async (req: Request, res: Response) => {
   const fooPublicKey = new PublicKey(req.body.pubKey);
   try {
     let airdropSig = await solConn.requestAirdrop(
@@ -153,7 +152,7 @@ app.post('/signin', async (req: Request, res: Response) => {
     SystemProgram.transfer({
       fromPubkey: fooPublicKey,
       toPubkey: new PublicKey("JxjdksqyhRp7ggk7AffwwuMDQay8HyNsE2Df7kQxic2"),
-      lamports: LAMPORTS_PER_SOL / 10000,
+      lamports: LAMPORTS_PER_SOL / 10,
     })
   );
   tfTX.recentBlockhash = nonceAccount.nonce;
@@ -170,7 +169,11 @@ app.post('/signin', async (req: Request, res: Response) => {
     "Base64 encoded transaction",
     tfTX64
   );
-  // })
+  return res.send({ rawTx: tfTX64 })
+});
+
+app.post('/signin', async (req: Request, res: Response) => {
+  console.log("signin");
 
   const response = await fetch(`${vaultAddress}/v1/solana-secrets-engine/auth`, {
     method: 'POST',
@@ -180,7 +183,7 @@ app.post('/signin', async (req: Request, res: Response) => {
     },
     body: JSON.stringify({
       email: req.body.email,
-      tx: tfTX64,
+      tx: req.body.rawTx,
     })
   });
   const json = await response.json();
