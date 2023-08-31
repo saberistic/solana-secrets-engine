@@ -8,10 +8,11 @@
     <h1>Login Example</h1>
 
     <input id="email" type="text" name="email" value="inbox@saberistic.com" />
-    <button id="sendemail">Send email</button>
-    <button id="webauthnButton">Authenticate with WebAuthn</button>
+    <button id="register">Register</button>
+    <button id="authenticate">Authenticate</button>
 
     <script>
+      let pubKey = "";
       const bf = ethereumjs.Buffer.Buffer;
       function padString(input) {
         // const b = ethereumjs.Buffer.Buffer;
@@ -59,7 +60,7 @@
       }
 
       document
-        .getElementById("sendemail")
+        .getElementById("register")
         .addEventListener("click", async () => {
           const emailInput = document.getElementById("email");
           // try {
@@ -72,8 +73,7 @@
               email: email.value,
             }),
           });
-          const json = await response.json();
-          var enc = new TextEncoder();
+          let json = await response.json();
           console.log(json.options.publicKey.challenge.toString());
           json.options.publicKey.user.id = base64url_decode(
             json.options.publicKey.user.id
@@ -120,9 +120,72 @@
               credential,
             }),
           });
+          json = await response.json();
+          console.log(json.data.pubKey);
+          pubKey = json.data.pubKey;
           // } catch (err) {
           //   console.error(err);
           // }
+        });
+
+      document
+        .getElementById("authenticate")
+        .addEventListener("click", async () => {
+          const emailInput = document.getElementById("email");
+          let response = await fetch(`${host}/signin`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: email.value,
+              pubKey: pubKey,
+            }),
+          });
+          const json = await response.json();
+          json.options.publicKey.challenge = base64url_decode(
+            json.options.publicKey.challenge.toString()
+          );
+
+          for (let cred of json.options.publicKey.allowCredentials) {
+            cred.id = base64url_decode(cred.id);
+          }
+          console.log(json);
+          const cred = await navigator.credentials.get(json.options);
+
+          const credential = {};
+          credential.id = cred.id;
+          credential.type = cred.type;
+          credential.rawId = base64url_encode(cred.rawId);
+
+          if (cred.response) {
+            const clientDataJSON = base64url_encode(
+              cred.response.clientDataJSON
+            );
+            const authenticatorData = base64url_encode(
+              cred.response.authenticatorData
+            );
+            const signature = base64url_encode(cred.response.signature);
+            const userHandle = base64url_encode(cred.response.userHandle);
+            credential.response = {
+              clientDataJSON,
+              authenticatorData,
+              signature,
+              userHandle,
+            };
+          }
+          console.log(credential);
+
+          response = await fetch(`${host}/complete`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: email.value,
+              credential,
+            }),
+          });
         });
     </script>
   </body>

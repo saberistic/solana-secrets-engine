@@ -12,7 +12,7 @@ endif
 
 .DEFAULT_GOAL := all
 
-all: clean fmt build start
+all: fmt build start
 
 build:
 	CGO_ENABLED=0 GOOS=$(OS) GOARCH="$(GOARCH)" go build -o vault/plugins/solana-secrets-engine cmd/solana-secrets-engine/main.go
