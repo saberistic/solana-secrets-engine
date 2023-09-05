@@ -11,7 +11,7 @@ describe("make a transaction", () => {
 
   it("should submit transaction", async () => {
     const serializedTx =
-      "Aqm4bBLBUT7ZOFlqRGUl5/NXRvVLw4L/J0MBoPdkQQecZgZVzHFNkVUcdKJ3tWiTsRXHwX5AxOgKP921TK/gNAC43WNhls94QPcGCvh0Q+KcWZnFYv6lfMLvv93DjJt7dnWfvypBdF+Brbc+aZyDBrvRbH8Q562Bhs2xsCASQIQFAgECBrepxFZ08MC60cOcsoC1eEJ6BWvor5F+R42MifyItJGINCBR4JZvkL1taWv1dMoN7zHebVD+/Q6kwK/sEZhtg9EazEMbaBWVfibTfx2WztNsLvMh/BhZoTT/CdWM17ovjXN065Fwl7rUh0k3gsZie0S7W6BiAEIVY6i7mVFSYpLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGp9UXGSxWjuCKhF9z0peIzwNcMUWyGrNE2AYuqUAAACKrLj1fXNDQS3oDAFvAPbWHsy8id6TpnVGIeSbMSrJlAgQDAwUBBAQAAAAEAgACDAIAAACAlpgAAAAAAA==";
+      "Al0mxUu0B21M/9e0VttnFu2laMOd0ATse4locYR534O7O1b0jOjFO93Rld2cgUU3BrogQ94ykqWK6uHrW9q8ZQ0XcHWsEjaVuIiULFglICIMbTcmIbvdPgHcas619S90X+4Se8oUU2b23BwZl1Wym7JoVjvXJtqUe+rYpImct24DAgECBkzG5uHLQl0WXb5iFXHIFSuQZ+Dz/8O4OgjA9WfL8dILNCBR4JZvkL1taWv1dMoN7zHebVD+/Q6kwK/sEZhtg9E5jDJQglKeq5Tip5ZycPslOFqrPW0MSuoUvtoARgLaJgSZ5MJ5m/4z8Jy8it1bFHRwiBqUS/hvFU3KhosvxZ4bAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGp9UXGSxWjuCKhF9z0peIzwNcMUWyGrNE2AYuqUAAAC9ze6vxVZ+rlrKzqr4vEo9A76QHysEMOr+pdgriQmVHAgQDAgUBBAQAAAAEAgADDAIAAACghgEAAAAAAA==";
     const tx = Transaction.from(Buffer.from(serializedTx, "base64"));
     const sz = tx.serialize({
       requireAllSignatures: true,
@@ -19,6 +19,7 @@ describe("make a transaction", () => {
     });
     const sig = await sendAndConfirmRawTransaction(solConn, sz, {
       commitment: "confirmed",
+      skipPreflight: true,
     });
     console.log(sig);
   });

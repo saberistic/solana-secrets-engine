@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "types": ["mocha", "chai"],
-    "typeRoots": ["./node_modules/@types"],
-    "lib": ["es2015"],
-    "module": "commonjs",
     "target": "es6",
+    "sourceRoot": "src",
+    "sourceMap": true,
+    "module": "commonjs",
+    "outDir": "dist",
     "esModuleInterop": true
   }
 }
