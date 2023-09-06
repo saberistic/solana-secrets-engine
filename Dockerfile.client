@@ -1,0 +1,8 @@
+FROM node:latest
+WORKDIR /client
+COPY package.json .
+COPY package-lock.json .
+RUN npm i
+COPY public/ public/
+EXPOSE 9080
+ENTRYPOINT ["npm", "run", "serve"]

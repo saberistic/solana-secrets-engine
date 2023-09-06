@@ -1,0 +1,16 @@
+FROM golang:latest as builder
+WORKDIR /build/
+COPY cmd ./cmd
+COPY backend.go .
+COPY user.go .
+COPY Makefile .
+COPY go.mod .
+COPY go.sum .
+RUN make build
+
+FROM vault:1.13.3
+COPY --from=builder /build/vault/plugins/solana-secrets-engine /vault/plugins/solana-secrets-engine
+# COPY start.sh .
+EXPOSE 8200
+COPY Makefile .
+ENTRYPOINT sh -c "vault server -dev -dev-root-token-id=root -dev-plugin-dir=./vault/plugins & sleep 2 ; VAULT_ADDR='http://127.0.0.1:8200' vault secrets enable -path=solana-secrets-engine solana-secrets-engine & wait"

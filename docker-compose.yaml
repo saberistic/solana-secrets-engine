@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  vault:
+    build:
+      context: .
+      dockerfile: Dockerfile.vault
+    ports:
+      - "8200:8200"
+    environment:
+      - VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    ports:
+      - "9080:9080"
+    depends_on:
+      - service
+  service:
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+    ports:
+      - "3000:3000"
+    environment:
+      - VAULT_ADDRESS=http://vault:8200
+      - ROOT_TOKEN=root
+    depends_on:
+      - vault
+

@@ -9,8 +9,8 @@ const port = 3000;
 app.use(cors())
 app.use(express.json());
 
-const vaultAddress = 'http://127.0.0.1:8200'
-const vaultToken = 'root'
+const vaultAddress = process.env.VAULT_ADDRESS || 'http://127.0.0.1:8200';
+const vaultToken = process.env.ROOT_TOKEN || 'root';
 const solConn = new Connection("https://api.devnet.solana.com", "confirmed");
 
 function retryWithExponentialBackoff(fn, maxAttempts = 5, baseDelayMs = 1000) {
