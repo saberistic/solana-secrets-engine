@@ -139,6 +139,7 @@ Total Year 1 Expenses: $470,000
 For Year 2 and Year 3, a 20-30% increase year-over-year is a reasonable estimate for a growing startup, but this can vary.
 
 Year 2 Estimated Expenses: $564,000 (20% increase from Year 1)
+
 Year 3 Estimated Expenses: $676,800 (20% increase from Year 2)
 
 ## Funding Request
