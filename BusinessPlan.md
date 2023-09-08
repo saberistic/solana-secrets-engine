@@ -87,13 +87,59 @@ Engage with the web3 community and handle sales inquiries.
 
 ## Financial Projections
 
-**Year 1 Revenue:** $95,000  
-**Year 2 Revenue:** $142,500  
-**Year 3 Revenue:** $212,750
+**Year 1 revenue**:
 
-**Year 1 Expenses:** $470,000  
-**Year 2 Expenses:** $564,000  
-**Year 3 Expenses:** $676,800
+- Transactions: 100,000 transactions at $0.05 each = $5,000
+- Onboarding: 10,000 wallets at $5 each = $50,000
+- Maintenance: 100 clients at $200 each = $20,000
+- White Labeling: 10 clients at $2,000 each = $20,000
+- Total Revenue for Year 1: $95,000
+
+**Year 2 revenue**: (Assuming a 50% growth rate)
+
+- Transactions: 150,000 transactions at $0.05 each = $7,500
+- Onboarding: 15,000 wallets at $5 each = $75,000
+- Maintenance: 150 clients at $200 each = $30,000
+- White Labeling: 15 clients at $2,000 each = $30,000
+- Total Revenue for Year 2: $142,500
+
+**Year 3 revenue**: (Assuming a 50% growth rate)
+
+- Transactions: 225,000 transactions at $0.05 each = $11,250
+- Onboarding: 22,500 wallets at $5 each = $112,500
+- Maintenance: 225 clients at $200 each = $45,000
+- White Labeling: 22 clients at $2,000 each = $44,000
+- Total Revenue for Year 3: $212,750
+
+**Salaries & Wages**:
+
+- Chief Developer Officer: $80,000
+- Full Stack Engineers (2): $150,000 ($75,000 each)
+- DevOps Engineer: $80,000
+- Marketing and Sales Specialist: $60,000
+- Total Salaries & Wages: $370,000
+
+**Hosting & Infrastructure**:
+- Cloud hosting, domain, SSL, other software subscriptions: $20,000
+
+**Marketing & Advertising**:
+- Online ads, content creation, community engagement, hackathon sponsorships: $30,000
+
+**Office & Miscellaneous**:
+- software licenses, communication tools, and other miscellaneous expenses: $10,000
+
+**Legal & Compliance**:
+- Incorporation fees, legal consultations, potential patents or trademarks: $15,000
+
+**Research & Development**:
+- Tools, resources, potential third-party consultations: $25,000
+
+Total Year 1 Expenses: $470,000
+
+For Year 2 and Year 3, a 20-30% increase year-over-year is a reasonable estimate for a growing startup, but this can vary.
+
+Year 2 Estimated Expenses: $564,000 (20% increase from Year 1)
+Year 3 Estimated Expenses: $676,800 (20% increase from Year 2)
 
 ## Funding Request
 
