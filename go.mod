@@ -1,4 +1,4 @@
-module github.com/saberistic/solana-secrets-engine
+module github.com/spiral-safe/services
 
 go 1.19
 

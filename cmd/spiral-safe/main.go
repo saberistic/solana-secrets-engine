@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/vault/api"
 	"github.com/hashicorp/vault/sdk/plugin"
-	solana_se "github.com/saberistic/solana-secrets-engine"
+	solana_se "github.com/spiral-safe/services"
 )
 
 func main() {

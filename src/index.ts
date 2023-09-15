@@ -37,7 +37,7 @@ function retryWithExponentialBackoff(fn, maxAttempts = 5, baseDelayMs = 1000) {
 }
 
 app.post('/init', async (req: Request, res: Response) => {
-  const response = await fetch(`${vaultAddress}/v1/solana-secrets-engine/users`, {
+  const response = await fetch(`${vaultAddress}/v1/spiral-safe/users`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ app.post('/create', async (req: Request, res: Response) => {
   const credResponse = req.body.credential;
   console.log(req.body);
 
-  const response = await fetch(`${vaultAddress}/v1/solana-secrets-engine/users`, {
+  const response = await fetch(`${vaultAddress}/v1/spiral-safe/users`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -84,82 +84,18 @@ app.post('/create', async (req: Request, res: Response) => {
 
 app.post('/transaction', async (req: Request, res: Response) => {
   const fooPublicKey = new PublicKey(req.body.pubKey);
-  try {
-    let airdropSig = await solConn.requestAirdrop(
-      fooPublicKey,
-      LAMPORTS_PER_SOL * 1
-    );
-    let blockInfo = await solConn.getLatestBlockhash("confirmed");
-    await solConn.confirmTransaction(
-      {
-        signature: airdropSig,
-        blockhash: blockInfo.blockhash,
-        lastValidBlockHeight: blockInfo.lastValidBlockHeight,
-      },
-      "finalized"
-    );
-  } catch (err) { }
-  console.log("after airdrop");
-  const file = "/home/saber/.config/solana/id.json";
-  const authority = Keypair.fromSecretKey(
-    new Uint8Array(JSON.parse(readFileSync(file).toString()))
-  );
-  let nonce = Keypair.generate();
-  let tx = new Transaction().add(
-    // create nonce account
-    SystemProgram.createAccount({
-      fromPubkey: authority.publicKey,
-      newAccountPubkey: nonce.publicKey,
-      lamports: await solConn.getMinimumBalanceForRentExemption(
-        NONCE_ACCOUNT_LENGTH
-      ),
-      space: NONCE_ACCOUNT_LENGTH,
-      programId: SystemProgram.programId,
-    }),
-    // init nonce account
-    SystemProgram.nonceInitialize({
-      noncePubkey: nonce.publicKey, // nonce account pubkey
-      authorizedPubkey: authority.publicKey, // nonce account authority (for advance and close)
-    })
-  );
-  console.log("nonce tx after");
-  console.log(
-    `nonce init hash: ${await solConn.sendTransaction(tx, [
-      authority,
-      nonce,
-    ])}`
-  );
-
-  let tfTX64 = "";
-  // await retryWithExponentialBackoff(async ()=>{
-  let nonceAccount: NonceAccount;
-  while (!nonceAccount) {
-    try {
-      const accountInfo = await solConn.getAccountInfo(nonce.publicKey, {
-        commitment: "singleGossip",
-      });
-      nonceAccount = NonceAccount.fromAccountData(accountInfo.data);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
+  let blockInfo = await solConn.getLatestBlockhash("confirmed");
   const tfTX = new Transaction().add(
-    SystemProgram.nonceAdvance({
-      authorizedPubkey: authority.publicKey,
-      noncePubkey: nonce.publicKey,
-    }),
     SystemProgram.transfer({
       fromPubkey: fooPublicKey,
-      toPubkey: new PublicKey("JxjdksqyhRp7ggk7AffwwuMDQay8HyNsE2Df7kQxic2"),
+      toPubkey: new PublicKey("33wvmHvb3ZQy26QEyfjw5hMJKkFchctsQH2nG2XCbeVk"),
       lamports: LAMPORTS_PER_SOL / 10,
     })
   );
-  tfTX.recentBlockhash = nonceAccount.nonce;
+  tfTX.recentBlockhash = blockInfo.blockhash;
   tfTX.feePayer = fooPublicKey;
-  tfTX.partialSign(authority);
 
-  tfTX64 = tfTX
+  const tfTX64 = tfTX
     .serialize({
       requireAllSignatures: false,
       verifySignatures: false,
@@ -175,7 +111,7 @@ app.post('/transaction', async (req: Request, res: Response) => {
 app.post('/signin', async (req: Request, res: Response) => {
   console.log("signin");
 
-  const response = await fetch(`${vaultAddress}/v1/solana-secrets-engine/auth`, {
+  const response = await fetch(`${vaultAddress}/v1/spiral-safe/auth`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -199,7 +135,7 @@ app.post('/complete', async (req: Request, res: Response) => {
   const credResponse = req.body.credential;
   console.log(req.body);
 
-  const response = await fetch(`${vaultAddress}/v1/solana-secrets-engine/auth`, {
+  const response = await fetch(`${vaultAddress}/v1/spiral-safe/auth`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

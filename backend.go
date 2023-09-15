@@ -43,9 +43,9 @@ func Factory(ctx context.Context, conf *logical.BackendConfig) (logical.Backend,
 	}
 
 	wconfig := &webauthn.Config{
-		RPDisplayName: "Solana Secrets Engine Webauthn",  // Display Name for your site
-		RPID:          "localhost",                       // Generally the FQDN for your site
-		RPOrigins:     []string{"http://localhost:9080"}, // The origin URLs allowed for WebAuthn requests
+		RPDisplayName: "Spiral Safe",
+		RPID:          "spiralsafe.com",
+		RPOrigins:     []string{"https://spiralsafe.com", "https://www.spiralsafe.com"},
 	}
 
 	w, err := webauthn.New(wconfig)

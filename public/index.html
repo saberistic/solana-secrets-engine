@@ -7,10 +7,22 @@
   <body>
     <h1>Login Example</h1>
 
-    <input id="email" type="text" name="email" value="inbox@saberistic.com" />
-    <button id="register">Register</button>
-    <button id="transaction">Get Transaction</button>
-    <button id="authenticate">Authenticate</button>
+    <div>
+      <input id="email" type="text" name="email" value="inbox@saberistic.com" />
+      <button id="register">Register</button>
+      <div>Public Key:</div>
+      <div id="publicKey">Not available</div>
+    </div>
+    <div>
+      <button id="transaction" disabled="true">Get Transaction</button>
+      <div>Pre signing transaction</div>
+      <div id="rawTransaction">Not available</div>
+    </div>
+    <div>
+      <button id="authenticate" disabled="true">Authenticate</button>
+      <div>Signed transaction</div>
+      <div id="signedTransaction">Not available</div>
+    </div>
 
     <script>
       let pubKey = "";
@@ -55,7 +67,7 @@
       function fromBase64(base64) {
         return base64.replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
       }
-      const host = "http://localhost:3000";
+      const host = "https://spiralsafe.com/vault-service";
       // Check if the browser supports WebAuthn
       if (!window.PublicKeyCredential) {
         alert("WebAuthn is not supported in this browser.");
@@ -125,6 +137,8 @@
           json = await response.json();
           console.log(json.data.pubKey);
           pubKey = json.data.pubKey;
+          document.getElementById("publicKey").textContent = pubKey;
+          document.getElementById("transaction").disabled = false;
           // } catch (err) {
           //   console.error(err);
           // }
@@ -145,6 +159,8 @@
           const json = await response.json();
           console.log(json.rawTx);
           rawTx = json.rawTx;
+          document.getElementById("rawTransaction").textContent = rawTx;
+          document.getElementById("authenticate").disabled = false;
         });
 
       document
@@ -161,7 +177,7 @@
               rawTx: rawTx,
             }),
           });
-          const json = await response.json();
+          let json = await response.json();
           json.options.publicKey.challenge = base64url_decode(
             json.options.publicKey.challenge.toString()
           );
@@ -205,6 +221,8 @@
               credential,
             }),
           });
+          json = await response.json();
+          document.getElementById("signedTransaction").textContent = json.encodedTX;
         });
     </script>
   </body>
